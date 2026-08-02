@@ -8,6 +8,12 @@ from src.product import Product
 class TestLoader:
     """Test suite for JSON loader."""
 
+
+
+
+
+
+
     def test_load_data_from_json(self, tmp_path):
         """Test loading data from JSON file."""
         # Create test JSON data
@@ -33,6 +39,9 @@ class TestLoader:
         test_file = tmp_path / "test_products.json"
         with open(test_file, "w", encoding="utf-8") as f:
             json.dump(test_data, f, ensure_ascii=False, indent=2)
+
+        Category.category_count = 0
+        Category.product_count = 0
 
         # Load data
         categories = load_data_from_json(str(test_file))
