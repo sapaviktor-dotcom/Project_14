@@ -57,3 +57,18 @@ class Product:
 
         # Создаем новый товар
         return cls(name=new_name, description=new_description, price=new_price, quantity=new_quantity)
+
+    def __str__(self) -> str:
+        """
+        Задание 1: Строковое представление продукта
+        """
+        return f"{self.name}, {self.__price} руб. Остаток: {self.quantity} шт."
+
+    def __add__(self, other: "Product") -> Union[int, float]:
+        """
+        Задание 2: Магический метод сложения
+        Возвращает сумму произведений цены на количество у двух объектов
+        """
+        if not isinstance(other, Product):
+            raise TypeError(f"Нельзя сложить Product с {type(other).__name__}")
+        return (self.price * self.quantity) + (other.price * other.quantity)
