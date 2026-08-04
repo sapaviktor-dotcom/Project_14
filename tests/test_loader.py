@@ -45,7 +45,7 @@ class TestLoader:
         # Загружаем данные
         categories = load_data_from_json(str(test_file))
 
-        # Проверки
+        # Assertions
         assert len(categories) == 2
         assert isinstance(categories[0], Category)
         assert categories[0].name == "Electronics"
