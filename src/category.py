@@ -63,3 +63,18 @@ class Category:
             Список объектов Product
         """
         return self.__products
+
+    def __str__(self) -> str:
+        """
+        Задание 1: Строковое представление категории
+        Возвращает строку в формате: "Название категории, количество продуктов: X шт."
+        Где X - общее количество всех товаров на складе в этой категории
+        """
+        total_quantity = sum(product.quantity for product in self.__products)
+        return f"{self.name}, количество продуктов: {total_quantity} шт."
+
+    def get_total_quantity(self) -> int:
+        """
+        Вспомогательный метод для получения общего количества товаров в категории
+        """
+        return sum(product.quantity for product in self.__products)
