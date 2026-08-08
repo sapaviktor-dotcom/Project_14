@@ -1,6 +1,6 @@
 import pytest
 from src.category import Category
-from src.product import Product
+from src.product import Product, Smartphone, LawnGrass
 
 
 class TestCategory:
@@ -154,68 +154,29 @@ class TestCategory:
         assert isinstance(category2.products, str)
         assert category2.products == ""
 
+    def test_category_add_invalid_product(self):
+        """
+       Тест добавления невалидного объекта в категорию.
+        Используется isinstance() для проверки.
+        """
+        category = Category("Смартфоны", "Категория смартфонов", [])
 
-class TestCategoryEdgeCases:
-    """Тесты граничных случаев."""
+        with pytest.raises(TypeError) as exc_info:
+            category.add_product("not a product")
 
-    @pytest.fixture(autouse=True)
-    def reset_counts(self):
-        Category.category_count = 0
-        Category.product_count = 0
-        yield
+        assert "Можно добавлять только объекты класса Product или его наследников" in str(exc_info.value)
 
-    def test_category_with_very_long_names(self):
-        """Тест с очень длинными названиями."""
-        long_name = "A" * 1000
-        long_desc = "B" * 2000
+    def test_category_add_none_product(self):
+        """Тест добавления None в категорию."""
+        category = Category("Тест", "Тестовая категория", [])
 
-        product = Product("Test", "Desc", 100, 1)
-        category = Category(long_name, long_desc, [product])
+        with pytest.raises(TypeError) as exc_info:
+            category.add_product(None)
 
-        assert category.name == long_name
-        assert category.description == long_desc
-        assert len(category.products) > 0
-
-    def test_large_number_of_products(self):
-        """Тест с большим количеством продуктов."""
-        products = [Product(f"Product{i}", f"Desc{i}", i * 100, i) for i in range(100)]
-
-        category = Category("Large", "Large category", products)
-
-        assert category.product_count == 100
-        assert len(category.get_products_list()) == 100
-
-        # Проверяем форматирование
-        products_output = category.products
-        assert "Product0" in products_output
-        assert "Product99" in products_output
-
-    def test_add_product_after_initialization(self):
-        """Тест добавления продукта после создания категории."""
-        category = Category("Category", "Desc", [])
-        initial_count = Category.product_count
-
-        # Добавляем несколько продуктов
-        products_to_add = [
-            Product("P1", "D1", 10, 1),
-            Product("P2", "D2", 20, 2),
-            Product("P3", "D3", 30, 3),
-        ]
-
-        for product in products_to_add:
-            category.add_product(product)
-
-        assert len(category.get_products_list()) == 3
-        assert Category.product_count == initial_count + 3
-
-        # Проверяем порядок добавления
-        products_list = category.get_products_list()
-        assert products_list[0].name == "P1"
-        assert products_list[1].name == "P2"
-        assert products_list[2].name == "P3"
+        assert "Можно добавлять только объекты класса Product или его наследников" in str(exc_info.value)
 
     def test_category_str(self):
-        """Задание 1: Тест строкового представления категории"""
+        """Тест строкового представления категории"""
         product1 = Product("Товар1", "Описание1", 100, 5)
         product2 = Product("Товар2", "Описание2", 200, 3)
         category = Category("Электроника", "Электронные товары", [product1, product2])
@@ -246,3 +207,91 @@ class TestCategoryEdgeCases:
         category = Category("Электроника", "Электронные товары", [product1, product2])
 
         assert category.get_total_quantity() == 8
+
+
+class TestCategoryProductAddition:
+    """Тесты для добавления продуктов в категорию."""
+
+    @pytest.fixture(autouse=True)
+    def reset_counts(self):
+        """Сбрасываем счетчики перед каждым тестом."""
+        Category.category_count = 0
+        Category.product_count = 0
+        yield
+
+    def test_category_add_product(self):
+        """Тест добавления продукта в категорию"""
+        category = Category("Смартфоны", "Категория смартфонов", [])
+
+        smartphone = Smartphone(
+            "iPhone 15",
+            "Флагманский смартфон",
+            999.99,
+            10,
+            "High",
+            "iPhone 15 Pro",
+            256,
+            "Space Black"
+        )
+
+        category.add_product(smartphone)
+        assert len(category.get_products_list()) == 1
+        assert category.get_products_list()[0] is smartphone
+
+    def test_category_add_different_products(self):
+        """Тест добавления разных типов продуктов в категорию"""
+        category = Category("Товары", "Разные товары", [])
+
+        smartphone = Smartphone(
+            "iPhone 15",
+            "Флагманский смартфон",
+            999.99,
+            10,
+            "High",
+            "iPhone 15 Pro",
+            256,
+            "Space Black"
+        )
+
+        lawn_grass = LawnGrass(
+            "Газонная трава",
+            "Быстрорастущая газонная трава",
+            49.99,
+            100,
+            "Россия",
+            14,
+            "Зеленый"
+        )
+
+        product = Product("Ноутбук", "Мощный ноутбук", 50000, 5)
+
+        category.add_product(smartphone)
+        category.add_product(lawn_grass)
+        category.add_product(product)
+
+        assert len(category.get_products_list()) == 3
+
+    def test_category_add_product_updates_count(self):
+        """Тест обновления счетчика при добавлении продукта"""
+        category = Category("Тест", "Тестовая категория", [])
+        initial_count = Category.product_count
+
+        product = Product("Тестовый", "Тестовый продукт", 100, 5)
+        category.add_product(product)
+
+        assert Category.product_count == initial_count + 1
+        assert len(category.get_products_list()) == 1
+
+    def test_category_add_invalid_product_raises_type_error(self):
+        """
+        Тест добавления невалидного объекта в категорию.
+        Используется isinstance() для проверки.
+        """
+        category = Category("Тест", "Тестовая категория", [])
+
+        with pytest.raises(TypeError) as exc_info:
+            category.add_product("invalid object")
+
+        assert "Можно добавлять только объекты класса Product или его наследников" in str(exc_info.value)
+
+

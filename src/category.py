@@ -1,5 +1,5 @@
 from typing import List
-from src.product import Product
+from src.product import Product, Smartphone, LawnGrass
 
 
 class Category:
@@ -46,14 +46,21 @@ class Category:
 
     def add_product(self, product: Product) -> None:
         """
-        Добавляет продукт в категорию.
+        ЗАДАНИЕ 3: Добавляет продукт в категорию.
+        Проверяет, что добавляемый объект является экземпляром Product или его наследником.
+        Используется функция isinstance() для проверки.
+
         Аргументы:
             product: Объект Product для добавления
         Примечание:
             Увеличивает product_count на 1
         """
-        self.__products.append(product)
-        Category.product_count += 1
+        # Проверяем, что объект является экземпляром Product или его наследником
+        if isinstance(product, Product):
+            self.__products.append(product)
+            Category.product_count += 1
+        else:
+            raise TypeError("Можно добавлять только объекты класса Product или его наследников")
 
     def get_products_list(self) -> List[Product]:
         """

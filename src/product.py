@@ -66,9 +66,76 @@ class Product:
 
     def __add__(self, other: "Product") -> Union[int, float]:
         """
-        Задание 2: Магический метод сложения
+         Магический метод сложения с ограничением по классам
         Возвращает сумму произведений цены на количество у двух объектов
+        Проверяет, что объекты принадлежат одному классу с помощью type()
         """
-        if not isinstance(other, Product):
-            raise TypeError(f"Нельзя сложить Product с {type(other).__name__}")
+        # Проверяем, что оба объекта одного класса с помощью type()
+        if type(self) != type(other):
+            raise TypeError(f"Нельзя складывать товары разных классов: {type(self).__name__} и {type(other).__name__}")
         return (self.price * self.quantity) + (other.price * other.quantity)
+
+
+class Smartphone(Product):
+    """Класс Смартфон, наследник Product"""
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: Union[int, float],
+        quantity: int,
+        efficiency: str,
+        model: str,
+        memory: int,
+        color: str,
+    ):
+        """
+        Инициализация экземпляра смартфона.
+
+        Аргументы:
+            name: название продукта
+            description: описание продукта
+            price: цена продукта
+            quantity: количество на складе
+            efficiency: производительность
+            model: модель
+            memory: объем встроенной памяти (ГБ)
+            color: цвет
+        """
+        super().__init__(name, description, price, quantity)
+        self.efficiency = efficiency
+        self.model = model
+        self.memory = memory
+        self.color = color
+
+
+class LawnGrass(Product):
+    """Класс Трава газонная, наследник Product"""
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: Union[int, float],
+        quantity: int,
+        country: str,
+        germination_period: int,
+        color: str,
+    ):
+        """
+        Инициализация экземпляра травы газонной.
+
+        Аргументы:
+            name: название продукта
+            description: описание продукта
+            price: цена продукта
+            quantity: количество на складе
+            country: страна-производитель
+            germination_period: срок прорастания (дней)
+            color: цвет
+        """
+        super().__init__(name, description, price, quantity)
+        self.country = country
+        self.germination_period = germination_period
+        self.color = color
