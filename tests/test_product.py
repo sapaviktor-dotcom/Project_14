@@ -235,3 +235,40 @@ class TestProduct:
             # Стандартный repr
             assert "Product" in repr_output
             assert "object at" in repr_output
+
+    def test_product_str(self):
+        """Задание 1: Тест строкового представления продукта"""
+        product = Product("Ноутбук", "Мощный ноутбук", 50000, 10)
+        expected_str = "Ноутбук, 50000 руб. Остаток: 10 шт."
+        assert str(product) == expected_str
+
+    def test_product_str_with_float_price(self):
+        """Тест строкового представления с дробной ценой"""
+        product = Product("Смартфон", "Современный смартфон", 29999.99, 7)
+        expected_str = "Смартфон, 29999.99 руб. Остаток: 7 шт."
+        assert str(product) == expected_str
+
+    def test_product_add(self):
+        """Задание 2: Тест магического метода сложения"""
+        product1 = Product("Товар A", "Описание A", 100, 10)
+        product2 = Product("Товар B", "Описание B", 200, 2)
+
+        result = product1 + product2
+        expected = 100 * 10 + 200 * 2  # 1000 + 400 = 1400
+        assert result == expected
+
+    def test_product_add_with_floats(self):
+        """Тест сложения с дробными ценами"""
+        product1 = Product("Товар A", "Описание A", 99.99, 3)
+        product2 = Product("Товар B", "Описание B", 149.50, 2)
+
+        result = product1 + product2
+        expected = 99.99 * 3 + 149.50 * 2
+        assert result == expected
+
+    def test_product_add_invalid_type(self):
+        """Тест сложения с объектом не типа Product"""
+        product = Product("Товар", "Описание", 100, 10)
+        with pytest.raises(TypeError) as excinfo:
+            result = product + "не продукт"
+        assert "Нельзя сложить Product с" in str(excinfo.value)

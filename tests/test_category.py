@@ -213,3 +213,36 @@ class TestCategoryEdgeCases:
         assert products_list[0].name == "P1"
         assert products_list[1].name == "P2"
         assert products_list[2].name == "P3"
+
+    def test_category_str(self):
+        """Задание 1: Тест строкового представления категории"""
+        product1 = Product("Товар1", "Описание1", 100, 5)
+        product2 = Product("Товар2", "Описание2", 200, 3)
+        category = Category("Электроника", "Электронные товары", [product1, product2])
+
+        expected_str = "Электроника, количество продуктов: 8 шт."
+        assert str(category) == expected_str
+
+    def test_category_str_empty(self):
+        """Тест строкового представления пустой категории"""
+        category = Category("Пустая", "Пустая категория", [])
+        expected_str = "Пустая, количество продуктов: 0 шт."
+        assert str(category) == expected_str
+
+    def test_category_str_with_multiple_quantities(self):
+        """Тест строкового представления с разными количествами товаров"""
+        product1 = Product("Товар1", "Описание1", 100, 10)
+        product2 = Product("Товар2", "Описание2", 200, 0)
+        product3 = Product("Товар3", "Описание3", 300, 7)
+        category = Category("Тестовая", "Тестовая категория", [product1, product2, product3])
+
+        expected_str = "Тестовая, количество продуктов: 17 шт."  # 10 + 0 + 7
+        assert str(category) == expected_str
+
+    def test_category_get_total_quantity(self):
+        """Тест метода получения общего количества товаров"""
+        product1 = Product("Товар1", "Описание1", 100, 5)
+        product2 = Product("Товар2", "Описание2", 200, 3)
+        category = Category("Электроника", "Электронные товары", [product1, product2])
+
+        assert category.get_total_quantity() == 8
