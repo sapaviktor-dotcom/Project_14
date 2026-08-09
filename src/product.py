@@ -1,4 +1,4 @@
-from typing import Union, Dict, Any
+from typing import Any, Dict, Union
 
 
 class Product:
@@ -66,15 +66,14 @@ class Product:
 
     def __add__(self, other: "Product") -> Union[int, float]:
         """
-         Магический метод сложения с ограничением по классам
+        Магический метод сложения с ограничением по классам
         Возвращает сумму произведений цены на количество у двух объектов
-        Проверяет, что объекты принадлежат одному классу с помощью type()
+        Проверяет, что объекты принадлежат одному классу
         """
-        # Проверяем, что оба объекта одного класса с помощью type()
-        if type(self) != type(other):
+        # Проверяем, что оба объекта одного класса
+        if not isinstance(other, type(self)):
             raise TypeError(f"Нельзя складывать товары разных классов: {type(self).__name__} и {type(other).__name__}")
         return (self.price * self.quantity) + (other.price * other.quantity)
-
 
 class Smartphone(Product):
     """Класс Смартфон, наследник Product"""

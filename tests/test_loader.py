@@ -1,7 +1,9 @@
-import pytest
 import json
-from src.loader import load_data_from_json
+
+import pytest
+
 from src.category import Category
+from src.loader import load_data_from_json
 from src.product import Product
 
 

@@ -1,7 +1,9 @@
+from typing import Any, Dict
+
 import pytest
-from typing import Dict, Any
-from src.product import Product, Smartphone, LawnGrass
+
 from src.category import Category  # Добавьте этот импорт
+from src.product import LawnGrass, Product, Smartphone
 
 
 class TestProduct:
@@ -266,6 +268,7 @@ class TestProduct:
         # Проверяем соответствие сообщению из метода __add__
         assert "Нельзя складывать товары разных классов: Product и str" == str(excinfo.value)
 
+
 class TestProductInheritance:
     """Тесты для классов-наследников Product."""
 
@@ -280,14 +283,7 @@ class TestProductInheritance:
     def test_smartphone_creation(self):
         """ЗАДАНИЕ 1: Тест создания смартфона"""
         smartphone = Smartphone(
-            "iPhone 15",
-            "Флагманский смартфон",
-            999.99,
-            10,
-            "High",
-            "iPhone 15 Pro",
-            256,
-            "Space Black"
+            "iPhone 15", "Флагманский смартфон", 999.99, 10, "High", "iPhone 15 Pro", 256, "Space Black"
         )
 
         assert smartphone.name == "iPhone 15"
@@ -303,15 +299,7 @@ class TestProductInheritance:
 
     def test_lawn_grass_creation(self):
         """ЗАДАНИЕ 1: Тест создания травы газонной"""
-        lawn_grass = LawnGrass(
-            "Газонная трава",
-            "Быстрорастущая газонная трава",
-            49.99,
-            100,
-            "Россия",
-            14,
-            "Зеленый"
-        )
+        lawn_grass = LawnGrass("Газонная трава", "Быстрорастущая газонная трава", 49.99, 100, "Россия", 14, "Зеленый")
 
         assert lawn_grass.name == "Газонная трава"
         assert lawn_grass.description == "Быстрорастущая газонная трава"
@@ -326,25 +314,11 @@ class TestProductInheritance:
     def test_smartphone_addition(self):
         """ЗАДАНИЕ 2: Тест сложения смартфонов (один класс)"""
         smartphone1 = Smartphone(
-            "iPhone 15",
-            "Флагманский смартфон",
-            999.99,
-            10,
-            "High",
-            "iPhone 15 Pro",
-            256,
-            "Space Black"
+            "iPhone 15", "Флагманский смартфон", 999.99, 10, "High", "iPhone 15 Pro", 256, "Space Black"
         )
 
         smartphone2 = Smartphone(
-            "Samsung S23",
-            "Флагманский смартфон Samsung",
-            899.99,
-            15,
-            "High",
-            "Galaxy S23",
-            256,
-            "Phantom Black"
+            "Samsung S23", "Флагманский смартфон Samsung", 899.99, 15, "High", "Galaxy S23", 256, "Phantom Black"
         )
 
         total = smartphone1 + smartphone2
@@ -353,52 +327,21 @@ class TestProductInheritance:
 
     def test_lawn_grass_addition(self):
         """ЗАДАНИЕ 2: Тест сложения травы газонной (один класс)"""
-        grass1 = LawnGrass(
-            "Газонная трава А",
-            "Трава для газона",
-            49.99,
-            100,
-            "Россия",
-            14,
-            "Зеленый"
-        )
+        grass1 = LawnGrass("Газонная трава А", "Трава для газона", 49.99, 100, "Россия", 14, "Зеленый")
 
-        grass2 = LawnGrass(
-            "Газонная трава Б",
-            "Трава для газона",
-            39.99,
-            200,
-            "Германия",
-            21,
-            "Темно-зеленый"
-        )
+        grass2 = LawnGrass("Газонная трава Б", "Трава для газона", 39.99, 200, "Германия", 21, "Темно-зеленый")
 
         total = grass1 + grass2
         expected = 49.99 * 100 + 39.99 * 200
         assert total == expected
 
     def test_different_classes_addition_raises_type_error(self):
-        """ Тест сложения объектов разных классов - ошибка TypeError."""
+        """Тест сложения объектов разных классов - ошибка TypeError."""
         smartphone = Smartphone(
-            "iPhone 15",
-            "Флагманский смартфон",
-            999.99,
-            10,
-            "High",
-            "iPhone 15 Pro",
-            256,
-            "Space Black"
+            "iPhone 15", "Флагманский смартфон", 999.99, 10, "High", "iPhone 15 Pro", 256, "Space Black"
         )
 
-        lawn_grass = LawnGrass(
-            "Газонная трава",
-            "Быстрорастущая газонная трава",
-            49.99,
-            100,
-            "Россия",
-            14,
-            "Зеленый"
-        )
+        lawn_grass = LawnGrass("Газонная трава", "Быстрорастущая газонная трава", 49.99, 100, "Россия", 14, "Зеленый")
 
         with pytest.raises(TypeError) as exc_info:
             _ = smartphone + lawn_grass
@@ -417,14 +360,7 @@ class TestProductInheritance:
     def test_smartphone_and_product_addition_raises_type_error(self):
         """Тест сложения смартфона и обычного продукта - ошибка TypeError."""
         smartphone = Smartphone(
-            "iPhone 15",
-            "Флагманский смартфон",
-            999.99,
-            10,
-            "High",
-            "iPhone 15 Pro",
-            256,
-            "Space Black"
+            "iPhone 15", "Флагманский смартфон", 999.99, 10, "High", "iPhone 15 Pro", 256, "Space Black"
         )
 
         product = Product("Ноутбук", "Мощный ноутбук", 50000, 5)

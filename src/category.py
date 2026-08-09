@@ -1,5 +1,6 @@
 from typing import List
-from src.product import Product, Smartphone, LawnGrass
+
+from src.product import Product
 
 
 class Category:

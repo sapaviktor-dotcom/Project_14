@@ -1,6 +1,7 @@
 import pytest
+
 from src.category import Category
-from src.product import Product, Smartphone, LawnGrass
+from src.product import LawnGrass, Product, Smartphone
 
 
 class TestCategory:
@@ -86,6 +87,10 @@ class TestCategory:
         category2 = Category("Cat2", "Desc2", products2)
         category3 = Category("Cat3", "Desc3", products3)
 
+        assert len(category1.products) == 2
+        assert len(category2.products) == 1
+        assert len(category3.products) == 0
+
         assert Category.category_count == initial_cat_count + 3
         assert Category.product_count == initial_prod_count + 3  # 2 + 1 + 0
 
@@ -156,8 +161,8 @@ class TestCategory:
 
     def test_category_add_invalid_product(self):
         """
-       Тест добавления невалидного объекта в категорию.
-        Используется isinstance() для проверки.
+        Тест добавления невалидного объекта в категорию.
+         Используется isinstance() для проверки.
         """
         category = Category("Смартфоны", "Категория смартфонов", [])
 
@@ -224,14 +229,7 @@ class TestCategoryProductAddition:
         category = Category("Смартфоны", "Категория смартфонов", [])
 
         smartphone = Smartphone(
-            "iPhone 15",
-            "Флагманский смартфон",
-            999.99,
-            10,
-            "High",
-            "iPhone 15 Pro",
-            256,
-            "Space Black"
+            "iPhone 15", "Флагманский смартфон", 999.99, 10, "High", "iPhone 15 Pro", 256, "Space Black"
         )
 
         category.add_product(smartphone)
@@ -243,25 +241,10 @@ class TestCategoryProductAddition:
         category = Category("Товары", "Разные товары", [])
 
         smartphone = Smartphone(
-            "iPhone 15",
-            "Флагманский смартфон",
-            999.99,
-            10,
-            "High",
-            "iPhone 15 Pro",
-            256,
-            "Space Black"
+            "iPhone 15", "Флагманский смартфон", 999.99, 10, "High", "iPhone 15 Pro", 256, "Space Black"
         )
 
-        lawn_grass = LawnGrass(
-            "Газонная трава",
-            "Быстрорастущая газонная трава",
-            49.99,
-            100,
-            "Россия",
-            14,
-            "Зеленый"
-        )
+        lawn_grass = LawnGrass("Газонная трава", "Быстрорастущая газонная трава", 49.99, 100, "Россия", 14, "Зеленый")
 
         product = Product("Ноутбук", "Мощный ноутбук", 50000, 5)
 
@@ -293,5 +276,3 @@ class TestCategoryProductAddition:
             category.add_product("invalid object")
 
         assert "Можно добавлять только объекты класса Product или его наследников" in str(exc_info.value)
-
-
