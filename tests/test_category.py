@@ -87,12 +87,14 @@ class TestCategory:
         category2 = Category("Cat2", "Desc2", products2)
         category3 = Category("Cat3", "Desc3", products3)
 
-        assert len(category1.products) == 2
-        assert len(category2.products) == 1
-        assert len(category3.products) == 0
+        # Доступ к приватному атрибуту через name mangling
+        assert len(category1._Category__products) == 2
+        assert len(category2._Category__products) == 1
+        assert len(category3._Category__products) == 0
 
+        # Проверяем глобальные счетчики
         assert Category.category_count == initial_cat_count + 3
-        assert Category.product_count == initial_prod_count + 3  # 2 + 1 + 0
+        assert Category.product_count == initial_prod_count + 3 + 0
 
     def test_category_attributes_types(self):
         """Тест Category на правильные типы атрибутов."""
