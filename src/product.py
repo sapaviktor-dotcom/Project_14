@@ -26,6 +26,7 @@ class ProductMixin:  # pragma: no cover
         # Вызываем родительский конструктор
         super().__init__(*args, **kwargs)
 
+
 class Product(BaseProduct, ProductMixin):
     # Глобальный список всех товаров
     all_products = []
