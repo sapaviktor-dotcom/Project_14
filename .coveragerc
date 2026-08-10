@@ -1,0 +1,16 @@
+[run]
+source = src
+omit = 
+    */tests/*
+    */__pycache__/*
+    */site-packages/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    @abstractmethod
+    @property
+    @price.setter
+
+[html]
+directory = coverage_html

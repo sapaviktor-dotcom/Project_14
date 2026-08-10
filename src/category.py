@@ -1,9 +1,10 @@
-from typing import List
+from typing import List, Union
 
+from src.base import BaseStorage
 from src.product import Product
 
 
-class Category:
+class Category(BaseStorage):
     """Класс, представляющий категорию продукта."""
 
     # Атрибуты класса
@@ -86,3 +87,9 @@ class Category:
         Вспомогательный метод для получения общего количества товаров в категории
         """
         return sum(product.quantity for product in self.__products)
+
+    def get_total_price(self) -> Union[int, float]:
+        """
+        Получение общей стоимости всех товаров в категории (реализация абстрактного метода)
+        """
+        return sum(product.price * product.quantity for product in self.__products)
