@@ -94,7 +94,7 @@ class TestCategory:
 
         # Проверяем глобальные счетчики
         assert Category.category_count == initial_cat_count + 3
-        assert Category.product_count == initial_prod_count + 3 + 0
+        assert Category.product_count == initial_prod_count + 3
 
     def test_category_attributes_types(self):
         """Тест Category на правильные типы атрибутов."""
@@ -164,7 +164,7 @@ class TestCategory:
     def test_category_add_invalid_product(self):
         """
         Тест добавления невалидного объекта в категорию.
-         Используется isinstance() для проверки.
+        Используется isinstance() для проверки.
         """
         category = Category("Смартфоны", "Категория смартфонов", [])
 
@@ -214,6 +214,14 @@ class TestCategory:
         category = Category("Электроника", "Электронные товары", [product1, product2])
 
         assert category.get_total_quantity() == 8
+
+    def test_category_get_total_price(self):
+        """Тест метода получения общей стоимости всех товаров"""
+        product1 = Product("Товар1", "Описание1", 100, 5)  # 100 * 5 = 500
+        product2 = Product("Товар2", "Описание2", 200, 3)  # 200 * 3 = 600
+        category = Category("Электроника", "Электронные товары", [product1, product2])
+
+        assert category.get_total_price() == 1100
 
 
 class TestCategoryProductAddition:

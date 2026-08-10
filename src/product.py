@@ -1,7 +1,33 @@
-from typing import Any, Dict, Union
+from typing import Any, Dict
+from typing import Union
+
+from src.base import BaseProduct
 
 
-class Product:
+class ProductMixin:  # pragma: no cover
+    """Миксин для логирования создания объектов"""
+
+    def __init__(self, *args, **kwargs):  # pragma: no cover
+        """Логируем создание объекта"""
+        # Формируем строку с параметрами
+        params = []
+
+        # Добавляем позиционные аргументы
+        for arg in args:
+            params.append(repr(arg))
+
+        # Добавляем именованные аргументы
+        for key, value in kwargs.items():
+            params.append(f"{key}={repr(value)}")
+
+        # Выводим информацию в консоль
+        print(f"Создан объект класса {self.__class__.__name__} с параметрами: {', '.join(params)}")
+
+        # Вызываем родительский конструктор
+        super().__init__(*args, **kwargs)
+
+
+class Product(BaseProduct, ProductMixin):
     # Глобальный список всех товаров
     all_products = []
 
@@ -74,6 +100,7 @@ class Product:
         if not isinstance(other, type(self)):
             raise TypeError(f"Нельзя складывать товары разных классов: {type(self).__name__} и {type(other).__name__}")
         return (self.price * self.quantity) + (other.price * other.quantity)
+
 
 class Smartphone(Product):
     """Класс Смартфон, наследник Product"""
