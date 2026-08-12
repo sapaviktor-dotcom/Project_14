@@ -2,6 +2,7 @@ from typing import List, Union
 
 from src.base import BaseStorage
 from src.product import Product
+from src.exceptions import ZeroQuantityError
 
 
 class Category(BaseStorage):
@@ -15,13 +16,11 @@ class Category(BaseStorage):
         """
         Инициализируем экземпляр категории.
 
-         Аргументы:
-             name: Название категории (string)
-             description: Описание категории (string)
-             products: Список объектов продукта в этой категории.
-
+        Аргументы:
+            name: Название категории (string)
+            description: Описание категории (string)
+            products: Список объектов продукта в этой категории.
         """
-
         self.name = name
         self.description = description
         self.__products = products  # Приватный атрибут
@@ -48,7 +47,7 @@ class Category(BaseStorage):
 
     def add_product(self, product: Product) -> None:
         """
-        ЗАДАНИЕ 3: Добавляет продукт в категорию.
+        Добавляет продукт в категорию с обработкой нулевого количества.
         Проверяет, что добавляемый объект является экземпляром Product или его наследником.
         Используется функция isinstance() для проверки.
 
@@ -57,12 +56,27 @@ class Category(BaseStorage):
         Примечание:
             Увеличивает product_count на 1
         """
-        # Проверяем, что объект является экземпляром Product или его наследником
-        if isinstance(product, Product):
+        try:
+            # СНАЧАЛА проверяем тип объекта
+            if not isinstance(product, Product):
+                raise TypeError("Можно добавлять только объекты класса Product или его наследников")
+
+            # ПОТОМ проверяем количество
+            if product.quantity == 0:
+                raise ZeroQuantityError("Товар с нулевым количеством не может быть добавлен")
+
+            # Если все проверки пройдены - добавляем продукт
             self.__products.append(product)
             Category.product_count += 1
+
+        except ZeroQuantityError as e:
+            print(f"Ошибка: {e}")
+        except TypeError as e:
+            print(f"Ошибка типа: {e}")
         else:
-            raise TypeError("Можно добавлять только объекты класса Product или его наследников")
+            print("Товар добавлен успешно")
+        finally:
+            print("Обработка добавления товара завершена")
 
     def get_products_list(self) -> List[Product]:
         """
@@ -75,7 +89,7 @@ class Category(BaseStorage):
 
     def __str__(self) -> str:
         """
-        Задание 1: Строковое представление категории
+        Строковое представление категории
         Возвращает строку в формате: "Название категории, количество продуктов: X шт."
         Где X - общее количество всех товаров на складе в этой категории
         """
@@ -93,3 +107,14 @@ class Category(BaseStorage):
         Получение общей стоимости всех товаров в категории (реализация абстрактного метода)
         """
         return sum(product.price * product.quantity for product in self.__products)
+
+    def get_average_price(self) -> Union[int, float]:
+        """
+        Подсчет среднего ценника всех товаров в категории.
+        Если товаров нет, возвращает 0.
+        """
+        try:
+            total_price = sum(product.price for product in self.__products)
+            return total_price / len(self.__products)
+        except ZeroDivisionError:
+            return 0

@@ -127,13 +127,13 @@ class TestProduct:
 
     def test_new_product_handles_missing_fields(self):
         """Тест создания продукта с отсутствующими полями."""
-        product_data = {"name": "Test Product"}
+        product_data = {"name": "Test Product", "quantity": 5}
         product = src.product.Product.new_product(product_data)
 
         assert product.name == "Test Product"
         assert product.description == ""
         assert product.price == 0
-        assert product.quantity == 0
+        assert product.quantity == 5
 
     def test_new_product_case_insensitive_name_matching(self):
         """Тест поиска существующего продукта без учета регистра."""
@@ -259,6 +259,23 @@ class TestProduct:
             product + "не продукт"
         # Проверяем соответствие сообщению из метода __add__
         assert "Нельзя складывать товары разных классов: Product и str" == str(excinfo.value)
+
+    def test_new_product_handles_partial_fields(self):
+        """Тест создания продукта с отсутствующими полями."""
+        product_data = {"name": "Test Product"}
+        with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+            src.product.Product.new_product(product_data)  # Используем полное имя
+
+    def test_product_zero_quantity(self):
+        """Тест: создание товара с нулевым количеством вызывает ValueError"""
+        with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+            src.product.Product("Test", "Description", 100, 0)
+
+    def test_product_positive_quantity(self):
+        """Тест: создание товара с положительным количеством проходит успешно"""
+        product = src.product.Product("Test", "Description", 100, 5)
+        assert product.quantity == 5
+        assert product.name == "Test"
 
 
 class TestProductInheritance:
