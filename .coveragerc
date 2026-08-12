@@ -13,4 +13,4 @@ exclude_lines =
     @price.setter
 
 [html]
-directory = coverage_html
+directory = htmlcov
