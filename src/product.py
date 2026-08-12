@@ -39,8 +39,12 @@ class Product(BaseProduct, ProductMixin):
              name: название продукта (string)
              description: описание продукта (string)
              price: цена продукта (integer or float, can be with kopecks)
-             quantity: количество продукта на складе (integer)
+             quantity: количество продукта на складе (integer), если отсутствует вызывается исключение
         """
+        # Проверка на нулевое количество
+        if quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
+
         self.name = name
         self.description = description
         self.__price = price

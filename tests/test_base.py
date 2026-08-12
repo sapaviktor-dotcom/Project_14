@@ -1,9 +1,7 @@
 import pytest
-from typing import Union
-from abc import ABCMeta
-from src.base import BaseProduct, BaseStorage
-from src.product import Product, Smartphone, LawnGrass
+
 from src.order import Order
+from src.product import LawnGrass, Product, Smartphone
 
 
 class TestBaseProductCoverage:
@@ -89,14 +87,10 @@ class TestProductCoverage:
     def test_product_new_product_creates_new(self):
         """Тест new_product для создания нового товара."""
         from src.product import Product
+
         Product.all_products.clear()
 
-        product_data = {
-            "name": "Новый товар",
-            "description": "Описание",
-            "price": 1000,
-            "quantity": 5
-        }
+        product_data = {"name": "Новый товар", "description": "Описание", "price": 1000, "quantity": 5}
         product = Product.new_product(product_data)
 
         assert product.name == "Новый товар"
@@ -107,22 +101,13 @@ class TestProductCoverage:
     def test_product_new_product_updates_existing(self):
         """Тест new_product для обновления существующего товара."""
         from src.product import Product
+
         Product.all_products.clear()
 
-        product1_data = {
-            "name": "Товар",
-            "description": "Описание",
-            "price": 1000,
-            "quantity": 5
-        }
+        product1_data = {"name": "Товар", "description": "Описание", "price": 1000, "quantity": 5}
         product1 = Product.new_product(product1_data)
 
-        product2_data = {
-            "name": "Товар",
-            "description": "Новое описание",
-            "price": 1500,
-            "quantity": 3
-        }
+        product2_data = {"name": "Товар", "description": "Новое описание", "price": 1500, "quantity": 3}
         product2 = Product.new_product(product2_data)
 
         assert product1 is product2
@@ -134,73 +119,55 @@ class TestProductCoverage:
     def test_product_new_product_updates_only_quantity_if_price_lower(self):
         """Тест new_product: обновляется только количество, если цена ниже."""
         from src.product import Product
+
         Product.all_products.clear()
 
-        product1_data = {
-            "name": "Товар",
-            "description": "Описание",
-            "price": 2000,
-            "quantity": 5
-        }
+        product1_data = {"name": "Товар", "description": "Описание", "price": 2000, "quantity": 5}
         product1 = Product.new_product(product1_data)
 
-        product2_data = {
-            "name": "Товар",
-            "description": "Описание",
-            "price": 1500,
-            "quantity": 3
-        }
+        product2_data = {"name": "Товар", "description": "Описание", "price": 1500, "quantity": 3}
         product2 = Product.new_product(product2_data)
 
-        assert product1.price == 2000
-        assert product1.quantity == 8
+        assert product1.price == 2000  # Цена не изменилась (была выше)
+        assert product1.description == "Описание"  # Описание не изменилось
+        assert product1.quantity == 8  # Количество увеличилось: 5 + 3
+        assert product2 is product1  # Должен вернуться тот же объект
         assert len(Product.all_products) == 1
 
     def test_product_new_product_updates_description_if_new(self):
         """Тест new_product: обновляется описание, если новое отличается."""
         from src.product import Product
+
         Product.all_products.clear()
 
-        product1_data = {
-            "name": "Товар",
-            "description": "Старое описание",
-            "price": 1000,
-            "quantity": 5
-        }
+        product1_data = {"name": "Товар", "description": "Старое описание", "price": 1000, "quantity": 5}
         product1 = Product.new_product(product1_data)
 
-        product2_data = {
-            "name": "Товар",
-            "description": "Новое описание",
-            "price": 1000,
-            "quantity": 3
-        }
+        product2_data = {"name": "Товар", "description": "Новое описание", "price": 1000, "quantity": 3}
         product2 = Product.new_product(product2_data)
 
-        assert product1.description == "Новое описание"
+        assert product1.description == "Новое описание"  # Описание обновилось
+        assert product1.quantity == 8  # Количество увеличилось
+        assert product1.price == 1000  # Цена не изменилась
+        assert product2 is product1  # Вернулся существующий объект
+        assert len(Product.all_products) == 1  # В списке только один продукт
 
     def test_product_new_product_ignores_empty_description(self):
         """Тест new_product: игнорирует пустое описание."""
         from src.product import Product
+
         Product.all_products.clear()
 
-        product1_data = {
-            "name": "Товар",
-            "description": "Описание",
-            "price": 1000,
-            "quantity": 5
-        }
+        product1_data = {"name": "Товар", "description": "Описание", "price": 1000, "quantity": 5}
         product1 = Product.new_product(product1_data)
 
-        product2_data = {
-            "name": "Товар",
-            "description": "",
-            "price": 1000,
-            "quantity": 3
-        }
+        product2_data = {"name": "Товар", "description": "", "price": 1000, "quantity": 3}
         product2 = Product.new_product(product2_data)
 
-        assert product1.description == "Описание"
+        assert product1.description == "Описание"  # Описание не изменилось
+        assert product1.quantity == 8  # Количество увеличилось
+        assert product2 is product1
+        assert len(Product.all_products) == 1
 
     def test_product_add_same_class(self):
         """Тест __add__ с объектами одного класса."""
@@ -243,6 +210,7 @@ class TestProductCoverage:
     def test_product_all_products_global_list(self):
         """Тест глобального списка all_products."""
         from src.product import Product
+
         Product.all_products.clear()
 
         product1 = Product("Товар1", "Описание1", 100, 2)
@@ -255,14 +223,7 @@ class TestProductCoverage:
     def test_smartphone_inheritance(self):
         """Тест наследования Smartphone."""
         smartphone = Smartphone(
-            "iPhone 15",
-            "Флагманский смартфон",
-            100000,
-            5,
-            "Высокая",
-            "iPhone 15 Pro",
-            256,
-            "Титан"
+            "iPhone 15", "Флагманский смартфон", 100000, 5, "Высокая", "iPhone 15 Pro", 256, "Титан"
         )
         assert smartphone.name == "iPhone 15"
         assert smartphone.price == 100000
@@ -274,15 +235,7 @@ class TestProductCoverage:
 
     def test_lawn_grass_inheritance(self):
         """Тест наследования LawnGrass."""
-        grass = LawnGrass(
-            "Газонная трава",
-            "Смесь для спортивного газона",
-            1500,
-            10,
-            "Германия",
-            14,
-            "Зеленый"
-        )
+        grass = LawnGrass("Газонная трава", "Смесь для спортивного газона", 1500, 10, "Германия", 14, "Зеленый")
         assert grass.name == "Газонная трава"
         assert grass.price == 1500
         assert grass.quantity == 10
@@ -320,22 +273,13 @@ class TestAdditionalCoverage:
     def test_product_new_product_case_insensitive(self):
         """Тест new_product с регистронезависимым поиском."""
         from src.product import Product
+
         Product.all_products.clear()
 
-        product1_data = {
-            "name": "Товар",
-            "description": "Описание",
-            "price": 1000,
-            "quantity": 5
-        }
+        product1_data = {"name": "Товар", "description": "Описание", "price": 1000, "quantity": 5}
         product1 = Product.new_product(product1_data)
 
-        product2_data = {
-            "name": "товар",
-            "description": "Новое описание",
-            "price": 1500,
-            "quantity": 3
-        }
+        product2_data = {"name": "товар", "description": "Новое описание", "price": 1500, "quantity": 3}
         product2 = Product.new_product(product2_data)
 
         assert product1 is product2
@@ -346,14 +290,10 @@ class TestAdditionalCoverage:
     def test_product_new_product_empty_name(self):
         """Тест new_product с пустым именем."""
         from src.product import Product
+
         Product.all_products.clear()
 
-        product_data = {
-            "name": "",
-            "description": "Описание",
-            "price": 1000,
-            "quantity": 5
-        }
+        product_data = {"name": "", "description": "Описание", "price": 1000, "quantity": 5}
         product = Product.new_product(product_data)
 
         assert product.name == ""
@@ -364,24 +304,25 @@ class TestAdditionalCoverage:
     def test_product_new_product_missing_fields(self):
         """Тест new_product с отсутствующими полями."""
         from src.product import Product
+
         Product.all_products.clear()
 
         product_data = {}
-        product = Product.new_product(product_data)
 
-        assert product.name == ""
-        assert product.description == ""
-        assert product.price == 0
-        assert product.quantity == 0
-        assert len(Product.all_products) == 1
+        # Проверяем, что при отсутствии quantity выбрасывается исключение
+        with pytest.raises(ValueError) as exc_info:
+            Product.new_product(product_data)
+
+        assert "Товар с нулевым количеством не может быть добавлен" in str(exc_info.value)
+        assert len(Product.all_products) == 0  # Товар не должен быть добавлен
 
     def test_product_abstract_methods_implemented(self):
         """Тест, что все абстрактные методы реализованы."""
         product = Product("Тест", "Описание", 100, 5)
 
-        assert hasattr(product, 'price')
-        assert hasattr(product, '__str__')
-        assert hasattr(product, '__add__')
+        assert hasattr(product, "price")
+        assert hasattr(product, "__str__")
+        assert hasattr(product, "__add__")
 
         assert product.price == 100
         assert str(product) == "Тест, 100 руб. Остаток: 5 шт."
@@ -392,10 +333,10 @@ class TestAdditionalCoverage:
         product = Product("Тест", "Описание", 100, 5)
         order = Order(product, 2)
 
-        assert hasattr(order, 'add_product')
-        assert hasattr(order, 'get_total_quantity')
-        assert hasattr(order, 'get_total_price')
-        assert hasattr(order, '__str__')
+        assert hasattr(order, "add_product")
+        assert hasattr(order, "get_total_quantity")
+        assert hasattr(order, "get_total_price")
+        assert hasattr(order, "__str__")
 
         assert order.get_total_quantity() == 2
         assert order.get_total_price() == 200

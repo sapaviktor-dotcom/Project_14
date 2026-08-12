@@ -1,6 +1,8 @@
 import pytest
-from src.product import Product
+
+from src.exceptions import ZeroQuantityError
 from src.order import Order
+from src.product import Product
 
 
 class TestOrder:
@@ -13,6 +15,22 @@ class TestOrder:
 
         assert order.product == product
         assert order.quantity == 2
+
+    def test_order_initialization_zero_quantity(self):
+        """Тест инициализации заказа с нулевым количеством."""
+        product = Product("Ноутбук", "Игровой ноутбук", 50000, 10)
+
+        with pytest.raises(ZeroQuantityError, match="Заказ с нулевым количеством товара 'Ноутбук' невозможен"):
+            Order(product, 0)
+
+    def test_order_initialization_negative_quantity(self):
+        """Тест инициализации заказа с отрицательным количеством."""
+        product = Product("Ноутбук", "Игровой ноутбук", 50000, 10)
+
+        # Отрицательное количество не вызывает исключение в текущей реализации,
+        # но может быть логически неправильным. Этот тест показывает текущее поведение.
+        order = Order(product, -5)
+        assert order.quantity == -5
 
     def test_get_products_list(self):
         """Тест получения списка товаров."""
@@ -69,3 +87,16 @@ class TestOrder:
 
         expected = "Кабель - Количество: 3 шт., Стоимость: 1498.5 руб"
         assert str(order) == expected
+
+    def test_multiple_orders_different_products(self):
+        """Тест создания нескольких заказов с разными товарами."""
+        product1 = Product("Телефон", "Смартфон", 60000, 2)
+        product2 = Product("Наушники", "Беспроводные наушники", 5000, 4)
+
+        order1 = Order(product1, 1)
+        order2 = Order(product2, 3)
+
+        assert order1.product == product1
+        assert order2.product == product2
+        assert order1.get_total_price() == 60000
+        assert order2.get_total_price() == 15000

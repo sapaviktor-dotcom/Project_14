@@ -161,26 +161,32 @@ class TestCategory:
         assert isinstance(category2.products, str)
         assert category2.products == ""
 
-    def test_category_add_invalid_product(self):
+    def test_category_add_invalid_product(self, capsys):
         """
         Тест добавления невалидного объекта в категорию.
         Используется isinstance() для проверки.
         """
         category = Category("Смартфоны", "Категория смартфонов", [])
 
-        with pytest.raises(TypeError) as exc_info:
-            category.add_product("not a product")
+        # Вызываем метод, который должен вывести ошибку в консоль
+        category.add_product("not a product")
 
-        assert "Можно добавлять только объекты класса Product или его наследников" in str(exc_info.value)
+        # Проверяем вывод в консоль
+        captured = capsys.readouterr()
+        assert "Ошибка типа: Можно добавлять только объекты класса Product или его наследников" in captured.out
+        assert "Обработка добавления товара завершена" in captured.out
 
-    def test_category_add_none_product(self):
+    def test_category_add_none_product(self, capsys):
         """Тест добавления None в категорию."""
         category = Category("Тест", "Тестовая категория", [])
 
-        with pytest.raises(TypeError) as exc_info:
-            category.add_product(None)
+        # Вызываем метод, который должен вывести ошибку в консоль
+        category.add_product(None)
 
-        assert "Можно добавлять только объекты класса Product или его наследников" in str(exc_info.value)
+        # Проверяем вывод в консоль
+        captured = capsys.readouterr()
+        assert "Ошибка типа: Можно добавлять только объекты класса Product или его наследников" in captured.out
+        assert "Обработка добавления товара завершена" in captured.out
 
     def test_category_str(self):
         """Тест строкового представления категории"""
@@ -200,11 +206,11 @@ class TestCategory:
     def test_category_str_with_multiple_quantities(self):
         """Тест строкового представления с разными количествами товаров"""
         product1 = Product("Товар1", "Описание1", 100, 10)
-        product2 = Product("Товар2", "Описание2", 200, 0)
+        product2 = Product("Товар2", "Описание2", 200, 1)
         product3 = Product("Товар3", "Описание3", 300, 7)
         category = Category("Тестовая", "Тестовая категория", [product1, product2, product3])
 
-        expected_str = "Тестовая, количество продуктов: 17 шт."  # 10 + 0 + 7
+        expected_str = "Тестовая, количество продуктов: 18 шт."  # 10 + 0 + 7
         assert str(category) == expected_str
 
     def test_category_get_total_quantity(self):
@@ -275,14 +281,37 @@ class TestCategoryProductAddition:
         assert Category.product_count == initial_count + 1
         assert len(category.get_products_list()) == 1
 
-    def test_category_add_invalid_product_raises_type_error(self):
-        """
-        Тест добавления невалидного объекта в категорию.
-        Используется isinstance() для проверки.
-        """
-        category = Category("Тест", "Тестовая категория", [])
+    def test_category_average_price(self):
+        """Тест: подсчет среднего ценника товаров в категории"""
+        product1 = Product("Товар 1", "Описание 1", 100, 2)
+        product2 = Product("Товар 2", "Описание 2", 200, 3)
 
-        with pytest.raises(TypeError) as exc_info:
-            category.add_product("invalid object")
+        category = Category("Тестовая категория", "Описание", [product1, product2])
 
-        assert "Можно добавлять только объекты класса Product или его наследников" in str(exc_info.value)
+        # Средняя цена: (100 + 200) / 2 = 150
+        assert category.get_average_price() == 150
+
+    def test_category_average_price_empty(self):
+        """Тест: подсчет среднего ценника в пустой категории"""
+        category = Category("Пустая категория", "Описание", [])
+
+        # В пустой категории должно возвращаться 0
+        assert category.get_average_price() == 0
+
+    def test_category_with_different_products(self):
+        """Тест: категория с разными типами продуктов (Smartphone и LawnGrass)"""
+        smartphone = Smartphone("iPhone 13", "Смартфон Apple", 999.99, 10, "A15 Bionic", "iPhone 13", 128, "черный")
+
+        grass = LawnGrass("Газонная трава", "Смесь трав для газона", 50.0, 100, "Россия", 7, "зеленый")
+
+        category = Category("Разные товары", "Описание", [smartphone, grass])
+
+        # Средняя цена: (999.99 + 50.0) / 2 = 524.995
+        assert category.get_average_price() == 524.995
+
+    def test_category_average_price_one_product(self):
+        """Тест: категория с одним товаром"""
+        product = Product("Один товар", "Описание", 150, 1)
+        category = Category("Категория с одним товаром", "Описание", [product])
+
+        assert category.get_average_price() == 150
